@@ -14,6 +14,6 @@ Ansible role used to setup a freshly created operating system
         bootstrap_htpdate_servers:
           - http://www.wikipedia.org
 
-        bootstrap_http_proxy_packages_per_repo: []
+        bootstrap_http_proxy_packages_per_repo:
           - host: "archive.ubuntu.com"
             proxy: "http://my-proxy.local:3128"
