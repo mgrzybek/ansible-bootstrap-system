@@ -1,0 +1,154 @@
+---
+
+###############################################################################
+# Checks
+#
+- fail: msg="htpdate et ntpdate cannot be used together"
+  run_once: true
+  when:
+    - bootstrap_htpdate_servers | length > 0
+    - bootstrap_ntpdate_servers | length > 0
+
+###############################################################################
+# Facts
+#
+- set_fact:
+    configure_git_http: false
+    configure_git_https: false
+    configure_pip: false
+    configure_cargo: false
+    configure_rsyslog: false
+    configure_hostname: false
+    configure_htp: false
+    configure_ntp: false
+
+- name: Check git binary
+  tags: bootstrap-git
+  block:
+    - shell: which git || exit 0
+      register: git_result
+
+    - set_fact:
+        configure_git_https: true
+      when:
+        - git_result.stdout.find('git') > -1
+        - bootstrap_https_proxy_git | length > 0
+
+    - set_fact:
+        configure_git_http: true
+      when:
+        - git_result.stdout.find('git') > -1
+        - bootstrap_http_proxy_git | length > 0
+
+- name: Check pip binary
+  tags: bootstrap-pip
+  block:
+    - shell: (which virtualenv || which pip) 2>&1 >/dev/null && echo ok || exit 0
+      register: pip_result
+
+    - set_fact:
+        configure_pip: true
+      when:
+        - pip_result.stdout.find('ok') > -1
+        - bootstrap_http_proxy_pip | length > 0
+
+- name: Check cargo binary
+  tags: bootstrap-cargo
+  block:
+    - shell: which cargo || exit 0
+      register: cargo_result
+
+    - set_fact:
+        configure_cargo: true
+      when:
+        - cargo_result.stdout.find('cargo') > -1
+        - bootstrap_http_proxy_cargo|length > 0
+
+- name: Check rsyslog service
+  tags: bootstrap-rsyslog
+  block:
+    - shell: which rsyslogd || exit 0
+      register: rsyslog_result
+
+    - set_fact:
+        configure_rsyslog: true
+      when:
+        - bootstrap_syslog_target_host != None
+        - rsyslog_result.stdout.find('rsyslogd') > -1
+
+- set_fact:
+    configure_hostname: true
+  when:
+    - bootstrap_set_hostname_from_inventory == true
+    - bootstrap_hostname != 'localhost'
+
+- set_fact:
+    configure_htp: true
+  when: bootstrap_htpdate_servers | length > 0
+
+- set_fact:
+    configure_ntp: true
+  when: bootstrap_ntpdate_servers | length > 0
+
+###############################################################################
+# Proxies and repositories
+# TODO: set proxy for specific remote repo
+#
+- name: HTTP proxy configuration for apt
+  template: src=99proxy.j2 dest=/etc/apt/apt.conf.d/99proxy
+  when: ansible_os_family | lower == 'debian'
+  tags: bootstrap-proxy-package
+
+- name: HTTP configuration for yum
+  when: ansible_os_family | lower == 'redhat'
+  block:
+    - name: Set yum's proxy
+      when:
+        - bootstrap_http_proxy_packages != None
+        - bootstrap_http_proxy_packages is search('http')
+      ini_file:
+        path: /etc/yum.conf
+        section: main
+        option: proxy
+        no_extra_spaces: yes
+        value: "{{ bootstrap_http_proxy_packages }}"
+      tags: bootstrap-proxy-package
+
+    - name: Set yum's timeout
+      ini_file:
+        path: /etc/yum.conf
+        section: main
+        option: timeout
+        no_extra_spaces: yes
+        value: "{{ bootstrap_yum_timeout }}"
+      tags: bootstrap-repo-timeout
+
+    - name: Set fatestmirror preferences (include)
+      ini_file: 
+        path: /etc/yum/pluginconf.d/fastestmirror.conf
+        state: present
+        section: main
+        option: include_only
+        value: "{{ bootstrap_fastestmirror.include_only|join(',') }}"
+      when: bootstrap_fastestmirror.include_only|length > 0
+      tags: bootstrap-repo-package
+
+    - name: Set fatestmirror preferences (exclude)
+      ini_file: 
+        path: /etc/yum/pluginconf.d/fastestmirror.conf
+        state: present
+        section: main
+        option: exclude
+        value: "{{ bootstrap_fastestmirror.exclude|join(',') }}"
+      when: bootstrap_fastestmirror.exclude|length > 0
+      tags: bootstrap-repo-package
+
+    - name: set yum's repositories
+      yum_repository:
+        name: "{{ item.name }}"
+        description: "{{ item.description | default('')}}"
+        file: "{{ item.file }}"
+        baseurl: "{{ item.baseurl }}"
+        state: "{{ item.state | default('present') }}"
+      with_items: "{{ bootstrap_yum_repos }}"
+      tags: bootstrap-repo-package

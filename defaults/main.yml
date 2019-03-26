@@ -1,0 +1,26 @@
+---
+
+bootstrap_http_proxy:
+
+bootstrap_http_proxy_pip: "{{ bootstrap_http_proxy }}"
+bootstrap_http_proxy_git: "{{ bootstrap_http_proxy }}"
+bootstrap_https_proxy_git: "{{ bootstrap_http_proxy }}"
+bootstrap_http_proxy_cargo: "{{ bootstrap_http_proxy }}"
+bootstrap_http_proxy_packages: "{{ bootstrap_http_proxy }}"
+bootstrap_http_proxy_htpdate: "{{ bootstrap_http_proxy }}"
+
+bootstrap_syslog_target_host:
+bootstrap_syslog_target_port: 514
+bootstrap_syslog_target_protocol: tcp
+
+bootstrap_set_hostname_from_inventory: false
+bootstrap_hostname: "{{ inventory_hostname }}"
+
+bootstrap_htpdate_servers: []
+bootstrap_ntpdate_servers: []
+
+bootstrap_yum_timeout: 600
+
+bootstrap_package_state: present
+
+cache_timeout: 300

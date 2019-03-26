@@ -1,0 +1,2 @@
+# {{ ansible_managed }}
+*.* @{% if bootstrap_syslog_target_protocol == 'tcp' %}@{% endif %}{{ bootstrap_syslog_target_host }}:{{ bootstrap_syslog_target_port }}

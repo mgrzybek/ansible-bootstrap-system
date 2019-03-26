@@ -1,0 +1,20 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Time synchronization through HTTP
+Documentation=http://www.vervest.org/htp
+After=network.target
+
+[Service]
+EnvironmentFile={{ bootstrap_sysconfig_path }}/htpdate
+
+Restart=on-failure
+KillSignal=SIGTERM
+
+Type=forking
+ExecStart={{ bootstrap_htpdate_bin }} $HTP_PROXY $HTP_OPTIONS $HTP_SERVERS
+
+PIDFile=/var/run/htpdate.pid
+
+[Install]
+WantedBy=multi-user.target
+

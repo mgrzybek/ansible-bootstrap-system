@@ -1,0 +1,20 @@
+---
+
+bootstrap_fastestmirror:
+  include_only: []
+  exclude: []
+
+bootstrap_htpdate_distro_packages:
+    - htpdate
+
+bootstrap_ntpdate_distro_packages:
+    - ntpdate
+
+bootstrap_sysconfig_path: /etc/sysconfig
+
+bootstrap_distro_packages: []
+bootstrap_distro_remove_packages: []
+
+bootstrap_yum_repos: []
+
+bootstrap_htpdate_bin: /bin/htpdate

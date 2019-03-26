@@ -1,0 +1,13 @@
+---
+
+- name: restart rsyslog
+  service: name=rsyslog state=restarted enabled=yes
+
+- name: restart ntpdate
+  service: name=ntpdate.service state=restarted enabled=yes
+
+- name: restart htpdate
+  service: name=htpdate.service state=restarted enabled=yes
+
+- name: reload systemd
+  command: systemctl daemon-reload
