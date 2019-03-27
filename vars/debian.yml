@@ -12,7 +12,3 @@ bootstrap_distro_packages: []
 bootstrap_distro_remove_packages: []
 
 bootstrap_htpdate_bin: /usr/sbin/htpdate
-
-bootstrap_http_proxy_packages_per_repo: []
-#  - host: "archive.ubuntu.com"
-#    proxy: "http://my-proxy.local:3128"

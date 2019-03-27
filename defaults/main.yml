@@ -9,6 +9,10 @@ bootstrap_http_proxy_cargo: "{{ bootstrap_http_proxy }}"
 bootstrap_http_proxy_packages: "{{ bootstrap_http_proxy }}"
 bootstrap_http_proxy_htpdate: "{{ bootstrap_http_proxy }}"
 
+#bootstrap_http_proxy_packages_per_repo: []
+#  - host: "archive.ubuntu.com"
+#    proxy: "http://my-proxy.local:3128"
+
 bootstrap_syslog_target_host:
 bootstrap_syslog_target_port: 514
 bootstrap_syslog_target_protocol: tcp

@@ -1,8 +1,8 @@
 # {{ ansible_managed }}
 #
 {% for proxy_conf in bootstrap_http_proxy_packages_per_repo %}
-Acquire::http::Proxy::{{ proxy_conf.host "proxy_conf.proxy";
+Acquire::http::Proxy::{{ proxy_conf.host }} "{{ proxy_conf.proxy }}";
 {% endfor %}
 {% if bootstrap_http_proxy_packages != None %}
 Acquire::http::Proxy "{{ bootstrap_http_proxy_packages }}";
-{% endfor %}
+{% endif %}
