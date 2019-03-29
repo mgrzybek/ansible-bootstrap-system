@@ -32,13 +32,15 @@
         configure_git_https: true
       when:
         - git_result.stdout.find('git') > -1
-        - bootstrap_https_proxy_git | length > 0
+        - bootstrap_https_proxy_git != None
+        - bootstrap_https_proxy_git | length > 8
 
     - set_fact:
         configure_git_http: true
       when:
         - git_result.stdout.find('git') > -1
-        - bootstrap_http_proxy_git | length > 0
+        - bootstrap_https_proxy_git != None
+        - bootstrap_http_proxy_git | length > 8
 
 - name: Check pip binary
   tags: bootstrap-pip
@@ -50,7 +52,8 @@
         configure_pip: true
       when:
         - pip_result.stdout.find('ok') > -1
-        - bootstrap_http_proxy_pip | length > 0
+        - bootstrap_http_proxy_pip != None
+        - bootstrap_http_proxy_pip | length > 8
 
 - name: Check cargo binary
   tags: bootstrap-cargo
@@ -62,7 +65,8 @@
         configure_cargo: true
       when:
         - cargo_result.stdout.find('cargo') > -1
-        - bootstrap_http_proxy_cargo|length > 0
+        - bootstrap_http_proxy_cargo != None
+        - bootstrap_http_proxy_cargo | length > 0
 
 - name: Check rsyslog service
   tags: bootstrap-rsyslog
