@@ -128,7 +128,7 @@
       tags: bootstrap-repo-timeout
 
     - name: Set fatestmirror preferences (include)
-      ini_file: 
+      ini_file:
         path: /etc/yum/pluginconf.d/fastestmirror.conf
         state: present
         section: main
@@ -138,21 +138,22 @@
       tags: bootstrap-repo-package
 
     - name: Set fatestmirror preferences (exclude)
-      ini_file: 
+      when:
+        - bootstrap_fastestmirror.exclude | length > 0
+      tags: bootstrap-repo-package
+      ini_file:
         path: /etc/yum/pluginconf.d/fastestmirror.conf
         state: present
         section: main
         option: exclude
         value: "{{ bootstrap_fastestmirror.exclude|join(',') }}"
-      when: bootstrap_fastestmirror.exclude|length > 0
-      tags: bootstrap-repo-package
 
     - name: set yum's repositories
+      with_items: "{{ bootstrap_yum_repos }}"
+      tags: bootstrap-repo-package
       yum_repository:
         name: "{{ item.name }}"
         description: "{{ item.description | default('')}}"
         file: "{{ item.file }}"
         baseurl: "{{ item.baseurl }}"
         state: "{{ item.state | default('present') }}"
-      with_items: "{{ bootstrap_yum_repos }}"
-      tags: bootstrap-repo-package
