@@ -95,7 +95,7 @@
           dest: /etc/systemd/system/htpdate.service
 
     - name: Systemd reload
-      command: systemctl daemon-reload
+      systemd: daemon-reload=yes
       when: htpdate_conf is changed
 
 - when: configure_ntp == true
