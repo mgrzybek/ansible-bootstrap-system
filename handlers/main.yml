@@ -10,4 +10,4 @@
   service: name=htpdate.service state=restarted enabled=yes
 
 - name: reload systemd
-  command: systemctl daemon-reload
+  systemd: daemon_reload=yes
