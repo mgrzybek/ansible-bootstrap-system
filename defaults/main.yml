@@ -17,7 +17,7 @@ bootstrap_syslog_target_host:
 bootstrap_syslog_target_port: 514
 bootstrap_syslog_target_protocol: tcp
 bootstrap_syslog_target_log_format: syslog # or GELF
-bootstrap_syslog_target_http_path: /write # GELF over HTTP
+bootstrap_syslog_target_http_path: /gelf # GELF over HTTP
 bootstrap_syslog_target_http_username:
 bootstrap_syslog_target_http_password:
 bootstrap_syslog_target_http_headers: {}
