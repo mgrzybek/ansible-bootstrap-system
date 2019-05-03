@@ -19,7 +19,7 @@ template(name="gelf" type="list") {
 	property(name="syslogseverity")
 	constant(value="\"}")
 {% for tag in bootstrap_syslog_additional_tags | dict2items %}
-	constant(value="{\"{{ tag.key }}\":\"{{ tag.value }}\",")
+	constant(value="{\"{{ tag }}\":\"{{ bootstrap_syslog_additional_tags[tag] }}\",")
 {% endfor %}
 }
 
