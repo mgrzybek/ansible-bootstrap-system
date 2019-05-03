@@ -18,6 +18,7 @@
     configure_pip: false
     configure_cargo: false
     configure_rsyslog: false
+    configure_syslog_ng: false
     configure_hostname: false
     configure_htp: false
     configure_ntp: false
@@ -79,6 +80,18 @@
       when:
         - bootstrap_syslog_target_host != None
         - rsyslog_result.stdout.find('rsyslogd') > -1
+
+- name: Check syslog-ng service
+  tags: bootstrap-syslog-ng
+  block:
+    - shell: which syslog-ng || exit 0
+      register: syslog_ng_result
+
+    - set_fact:
+        configure_syslog_ng: true
+      when:
+        - bootstrap_syslog_target_host != None
+        - syslog_ng_result.stdout.find('syslog-ng') > -1
 
 - set_fact:
     configure_hostname: true

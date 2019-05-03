@@ -1,2 +1,33 @@
 # {{ ansible_managed }}
-*.* @{% if bootstrap_syslog_target_protocol == 'tcp' %}@{% endif %}{{ bootstrap_syslog_target_host }}:{{ bootstrap_syslog_target_port }}
+{% if bootstrap_syslog_target_log_format | lower == 'syslog' %}
+*.* @{% if bootstrap_syslog_target_protocol | lower == 'tcp' %}@{% endif %}{{ bootstrap_syslog_target_host }}:{{ bootstrap_syslog_target_port }}
+{% endif %}
+
+{% if bootstrap_syslog_target_protocol | lower == 'udp' and bootstrap_syslog_target_log_format | lower == 'gelf' %}
+#
+# https://www.rsyslog.com/files/temp/doc-indent/tutorials/gelf_forwarding.html
+#
+template(name="gelf" type="list") {
+	constant(value="{\"version\":\"1.1\",")
+	constant(value="\"host\":\"")
+	property(name="hostname")
+	constant(value="\",\"short_message\":\"")
+	property(name="msg" format="json")
+	constant(value="\",\"timestamp\":\"")
+	property(name="timegenerated" dateformat="unixtimestamp")
+	constant(value="\",\"level\":\"")
+	property(name="syslogseverity")
+	constant(value="\"}")
+{% for tag in bootstrap_syslog_additional_tags | dict2items %}
+	constant(value="{\"{{ tag.key }}\":\"{{ tag.value }}\",")
+{% endfor %}
+}
+
+# syslog forwarder via UDP
+action(
+	type="omfwd"
+	target="{{ bootstrap_syslog_target_host }}"
+	port="{{ bootstrap_syslog_target_host }}"
+	protocol="udp" template="gelf"
+)
+{% endif %}

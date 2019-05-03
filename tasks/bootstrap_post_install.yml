@@ -65,6 +65,13 @@
       template: src=rsyslog-remote.conf.j2 dest=/etc/rsyslog.d/99-remote.conf
       notify: restart rsyslog
 
+- when: configure_syslog_ng == true
+  tags: bootstrap-syslog-ng
+  block:
+    - name: Set a remote target for syslog-ng
+      template: src=syslog-ng-remote.conf.j2 dest=/etc/syslog-ng/conf.d/99-remote.conf
+      notify: restart syslog-ng
+
 - when: configure_hostname == true
   name: Set hostname according to the inventory
   hostname: name="{{ bootstrap_hostname }}"

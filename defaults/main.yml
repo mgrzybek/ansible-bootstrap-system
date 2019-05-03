@@ -16,6 +16,13 @@ bootstrap_http_proxy_packages_per_repo: []
 bootstrap_syslog_target_host:
 bootstrap_syslog_target_port: 514
 bootstrap_syslog_target_protocol: tcp
+bootstrap_syslog_target_log_format: syslog # or GELF
+bootstrap_syslog_target_http_path: /write # GELF over HTTP
+bootstrap_syslog_target_http_username:
+bootstrap_syslog_target_http_password:
+bootstrap_syslog_target_http_headers: {}
+
+bootstrap_syslog_additional_tags: {}
 
 bootstrap_set_hostname_from_inventory: false
 bootstrap_hostname: "{{ inventory_hostname }}"
