@@ -3,12 +3,18 @@
 - tags: bootstrap-git
   block:
     - name: HTTP proxy for git
-      command: git config --system http.proxy {{ bootstrap_http_proxy_git }}
       when: configure_git_http == true
+      git_config:
+        scope: system
+        name: http.proxy
+        value: "{{ bootstrap_http_proxy_git }}"
 
     - name: HTTPS proxy for git
-      command: git config --system https.proxy {{ bootstrap_https_proxy_git }}
       when: configure_git_https == true
+      git_config:
+        scope: system
+        name: https.proxy
+        value: "{{ bootstrap_https_proxy_git }}"
 
 - when: configure_pip == true
   tags: bootstrap-pip
