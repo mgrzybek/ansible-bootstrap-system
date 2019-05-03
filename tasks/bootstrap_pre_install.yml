@@ -3,7 +3,8 @@
 ###############################################################################
 # Checks
 #
-- fail: msg="htpdate et ntpdate cannot be used together"
+- name: Check htpdate and htpdate exclusiveness
+  fail: msg="htpdate et ntpdate cannot be used together"
   run_once: true
   when:
     - bootstrap_htpdate_servers | length > 0
@@ -12,7 +13,8 @@
 ###############################################################################
 # Facts
 #
-- set_fact:
+- name: Set default local facts
+  set_fact:
     configure_git_http: false
     configure_git_https: false
     configure_pip: false
@@ -26,17 +28,20 @@
 - name: Check git binary
   tags: bootstrap-git
   block:
-    - shell: which git || exit 0
+    - name: Check git presence
+      shell: which git || exit 0
       register: git_result
 
-    - set_fact:
+    - name: Set local fact for git
+      set_fact:
         configure_git_https: true
       when:
         - git_result.stdout.find('git') > -1
         - bootstrap_https_proxy_git != None
         - bootstrap_https_proxy_git | length > 8
 
-    - set_fact:
+    - name: Set local fact for git
+      set_fact:
         configure_git_http: true
       when:
         - git_result.stdout.find('git') > -1
@@ -46,10 +51,12 @@
 - name: Check pip binary
   tags: bootstrap-pip
   block:
-    - shell: (which virtualenv || which pip) 2>&1 >/dev/null && echo ok || exit 0
+    - name: Check pip and virtualenv presence
+      shell: (which virtualenv || which pip) 2>&1 >/dev/null && echo ok || exit 0
       register: pip_result
 
-    - set_fact:
+    - name: Check pip presence
+      set_fact:
         configure_pip: true
       when:
         - pip_result.stdout.find('ok') > -1
@@ -59,10 +66,12 @@
 - name: Check cargo binary
   tags: bootstrap-cargo
   block:
-    - shell: which cargo || exit 0
+    - name: Check cargo presence
+      shell: which cargo || exit 0
       register: cargo_result
 
-    - set_fact:
+    - name: Set local fact for cargo
+      set_fact:
         configure_cargo: true
       when:
         - cargo_result.stdout.find('cargo') > -1
@@ -72,10 +81,12 @@
 - name: Check rsyslog service
   tags: bootstrap-rsyslog
   block:
-    - shell: which rsyslogd || exit 0
+    - name: Check rsyslog presence
+      shell: which rsyslogd || exit 0
       register: rsyslog_result
 
-    - set_fact:
+    - name: Set local fact for rsyslog
+      set_fact:
         configure_rsyslog: true
       when:
         - bootstrap_syslog_target_host != None
@@ -84,28 +95,33 @@
 - name: Check syslog-ng service
   tags: bootstrap-syslog-ng
   block:
-    - shell: which syslog-ng || exit 0
+    - name: Check syslog-ng presence
+      shell: which syslog-ng || exit 0
       register: syslog_ng_result
 
-    - set_fact:
+    - name: Set local fact for syslog-ng
+      set_fact:
         configure_syslog_ng: true
       when:
         - bootstrap_syslog_target_host != None
         - syslog_ng_result.stdout.find('syslog-ng') > -1
 
-- set_fact:
-    configure_hostname: true
+- name: Set local fact for hostname configuration
   when:
     - bootstrap_set_hostname_from_inventory == true
     - bootstrap_hostname != 'localhost'
+  set_fact:
+    configure_hostname: true
 
-- set_fact:
-    configure_htp: true
+- name: Set local fact for htp
   when: bootstrap_htpdate_servers | length > 0
+  set_fact:
+    configure_htp: true
 
-- set_fact:
-    configure_ntp: true
+- name: Set local fact for ntp
   when: bootstrap_ntpdate_servers | length > 0
+  set_fact:
+    configure_ntp: true
 
 ###############################################################################
 # Proxies and repositories
