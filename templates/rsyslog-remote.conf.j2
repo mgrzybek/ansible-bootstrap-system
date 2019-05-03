@@ -18,9 +18,10 @@ template(name="gelf" type="list") {
 	constant(value="\",\"level\":\"")
 	property(name="syslogseverity")
 	constant(value="\"}")
-{% for tag in bootstrap_syslog_additional_tags | dict2items %}
+{% for tag in bootstrap_syslog_additional_tags %}
 	constant(value="{\"{{ tag }}\":\"{{ bootstrap_syslog_additional_tags[tag] }}\",")
 {% endfor %}
+
 }
 
 # syslog forwarder via UDP
