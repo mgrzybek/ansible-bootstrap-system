@@ -32,20 +32,20 @@
       shell: which git || exit 0
       register: git_result
 
-    - name: Set local fact for git
+    - name: Set local fact for git (https)
       set_fact:
         configure_git_https: true
       when:
-        - git_result.stdout.find('git') > -1
+        - git_result.stdout.find('git') > -1 or "git" in bootstrap_distro_packages
         - bootstrap_https_proxy_git != None
         - bootstrap_https_proxy_git | length > 8
 
-    - name: Set local fact for git
+    - name: Set local fact for git (http)
       set_fact:
         configure_git_http: true
       when:
-        - git_result.stdout.find('git') > -1
-        - bootstrap_https_proxy_git != None
+        - git_result.stdout.find('git') > -1 or "git" in bootstrap_distro_packages
+        - bootstrap_http_proxy_git != None
         - bootstrap_http_proxy_git | length > 8
 
 - name: Check pip binary
