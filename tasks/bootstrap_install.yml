@@ -47,6 +47,18 @@
     - install-yum
     - install-zypper
 
+- name: Get remote packages (deb)
+  when: ansible_pkg_mgr == 'apt'
+  apt:
+    name: "{{ item }}"
+    with_items: "{{ bootstrap_remote_distro_packages }}"
+
+- name: Get remote packages (deb)
+  when: ansible_pkg_mgr == 'rpm'
+  yum:
+    name: "{{ item }}"
+    with_items: "{{ bootstrap_remote_distro_packages }}"
+
 - name: Remove packages
   package:
     name: "{{ bootstrap_distro_remove_packages }}"
