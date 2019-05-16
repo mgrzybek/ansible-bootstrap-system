@@ -3,20 +3,20 @@
 - tags: bootstrap-git
   block:
     - name: HTTP proxy for git
-      when: configure_git_http == true
+      when: configure_git_http | lower == 'true'
       git_config:
         scope: system
         name: http.proxy
         value: "{{ bootstrap_http_proxy_git }}"
 
     - name: HTTPS proxy for git
-      when: configure_git_https == true
+      when: configure_git_https | lower == 'true'
       git_config:
         scope: system
         name: https.proxy
         value: "{{ bootstrap_https_proxy_git }}"
 
-- when: configure_pip == true
+- when: configure_pip | lower == 'true'
   tags: bootstrap-pip
   block:
     - name: HTTP proxy for pip (directories)
@@ -41,7 +41,7 @@
         - user: "{{ ansible_env['SUDO_USER'] }}"
           home: "{{ ansible_env['PWD'] }}"
 
-- when: configure_cargo == true
+- when: configure_cargo | lower == 'true'
   tags: bootstrap-cargo
   block:
     - name: HTTP proxy for cargo (directories)
@@ -64,25 +64,25 @@
         - user: "{{ ansible_env['SUDO_USER'] }}"
           home: "{{ ansible_env['PWD'] }}"
 
-- when: configure_rsyslog == true
+- when: configure_rsyslog | lower == 'true'
   tags: bootstrap-rsyslog
   block:
     - name: Set a remote target for rsyslog
       template: src=rsyslog-remote.conf.j2 dest=/etc/rsyslog.d/99-remote.conf
       notify: restart rsyslog
 
-- when: configure_syslog_ng == true
+- when: configure_syslog_ng | lower == 'true'
   tags: bootstrap-syslog-ng
   block:
     - name: Set a remote target for syslog-ng
       template: src=syslog-ng-remote.conf.j2 dest=/etc/syslog-ng/conf.d/99-remote.conf
       notify: restart syslog-ng
 
-- when: configure_hostname == true
+- when: configure_hostname | lower == 'true'
   name: Set hostname according to the inventory
   hostname: name="{{ bootstrap_hostname }}"
 
-- when: configure_htp == true
+- when: configure_htp | lower == 'true'
   block:
     - name: HTP configuration
       template: src={{ item.src }} dest={{ item.dest }}
@@ -98,7 +98,7 @@
       systemd: daemon-reload=yes
       when: htpdate_conf is changed
 
-- when: configure_ntp == true
+- when: configure_ntp | lower == 'true'
   block:
     - name: NTP configuration
       template: src=ntp.conf.j2 dest=/etc/ntp.conf

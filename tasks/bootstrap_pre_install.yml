@@ -108,7 +108,7 @@
 
 - name: Set local fact for hostname configuration
   when:
-    - bootstrap_set_hostname_from_inventory == true
+    - bootstrap_set_hostname_from_inventory | lower == 'true'
     - bootstrap_hostname != 'localhost'
   set_fact:
     configure_hostname: true
