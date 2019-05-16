@@ -51,11 +51,11 @@
   when: ansible_pkg_mgr == 'apt'
   with_items: "{{ bootstrap_remote_distro_packages }}"
   apt:
-    name: "{{ item }}"
+    deb: "{{ item }}"
 
 - name: Get remote packages (deb)
-  with_items: "{{ bootstrap_remote_distro_packages }}"
   when: ansible_pkg_mgr == 'rpm'
+  with_items: "{{ bootstrap_remote_distro_packages }}"
   yum:
     name: "{{ item }}"
 
