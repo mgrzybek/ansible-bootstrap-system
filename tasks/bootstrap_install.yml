@@ -49,9 +49,9 @@
 
 - name: Get remote packages (deb)
   when: ansible_pkg_mgr == 'apt'
+  with_items: "{{ bootstrap_remote_distro_packages }}"
   apt:
     name: "{{ item }}"
-    with_items: "{{ bootstrap_remote_distro_packages }}"
 
 - name: Get remote packages (deb)
   when: ansible_pkg_mgr == 'rpm'
