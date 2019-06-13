@@ -28,7 +28,7 @@ template(name="gelf" type="list") {
 action(
 	type="omfwd"
 	target="{{ bootstrap_syslog_target_host }}"
-	port="{{ bootstrap_syslog_target_host }}"
+	port="{{ bootstrap_syslog_target_port }}"
 	protocol="udp" template="gelf"
 )
 {% endif %}
