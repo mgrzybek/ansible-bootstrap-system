@@ -182,7 +182,7 @@
       tags: bootstrap-repo-package
       yum_repository:
         name: "{{ item.name }}"
-        description: "{{ item.description | default('')}}"
+        description: "{{ item.description | default('') }}"
         file: "{{ item.file }}"
         baseurl: "{{ item.baseurl }}"
         state: "{{ item.state | default('present') }}"
