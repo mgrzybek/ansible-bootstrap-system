@@ -10,6 +10,13 @@
     - bootstrap_htpdate_servers | length > 0
     - bootstrap_ntpdate_servers | length > 0
 
+- name: Check syslog remote target
+  fail: msg="a syslog remote target must be given if local logs are purged"
+  run_once: true
+  when:
+    - bootstrap_syslog_disable_local_storage | lower == 'true'
+    - bootstrap_syslog_target_host | length == 0
+
 ###############################################################################
 # Facts
 #
@@ -24,6 +31,7 @@
     configure_hostname: false
     configure_htp: false
     configure_ntp: false
+    purge_local_logs: false
 
 - name: Check git binary
   tags: bootstrap-git
@@ -92,6 +100,14 @@
         - bootstrap_syslog_target_host != None
         - rsyslog_result.stdout.find('rsyslogd') > -1
 
+    - name: Set local fact for local logs
+      set_fact:
+        purge_local_logs: true
+      when:
+        - bootstrap_syslog_target_host != None
+        - bootstrap_syslog_disable_local_storage | lower == 'true'
+        - rsyslog_result.stdout.find('rsyslogd') > -1
+
 - name: Check syslog-ng service
   tags: bootstrap-syslog-ng
   block:
@@ -104,6 +120,14 @@
         configure_syslog_ng: true
       when:
         - bootstrap_syslog_target_host != None
+        - syslog_ng_result.stdout.find('syslog-ng') > -1
+
+    - name: Set local fact for local logs
+      set_fact:
+        purge_local_logs: true
+      when:
+        - bootstrap_syslog_target_host != None
+        - bootstrap_syslog_disable_local_storage | lower == 'true'
         - syslog_ng_result.stdout.find('syslog-ng') > -1
 
 - name: Set local fact for hostname configuration

@@ -3,6 +3,9 @@
 - name: restart rsyslog
   service: name=rsyslog state=restarted enabled=yes
 
+- name: restart syslog-ng
+  service: name=syslog-ng state=restarted enabled=yes
+
 - name: restart ntpdate
   service: name=ntpdate.service state=restarted enabled=yes
 
@@ -11,3 +14,4 @@
 
 - name: reload systemd
   systemd: daemon_reload=yes
+
