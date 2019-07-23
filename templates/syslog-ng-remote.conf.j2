@@ -13,7 +13,7 @@ template t_json_msg {
 destination d_http {
 	http(
 		url("http://{{ bootstrap_syslog_target_host }}:{{ bootstrap_syslog_target_port }}/{{ bootstrap_syslog_target_http_path }}")
-		method("PUT")
+		method("POST")
 		user-agent("syslog-ng")
 {% if bootstrap_syslog_target_username != None and bootstrap_syslog_target_password != None %}
 		user("{{ bootstrap_syslog_target_http_username }}")
