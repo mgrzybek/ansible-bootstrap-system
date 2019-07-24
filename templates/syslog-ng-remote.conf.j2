@@ -25,7 +25,7 @@ destination d_http {
 };
 
 log {
-	source(s_src); destination(d_http); flags(flow-control);
+	source(s_sys); destination(d_http); flags(flow-control);
 };
 {% endif %}
 {% if bootstrap_syslog_target_log_format | lower == 'syslog' and bootstrap_syslog_target_protocol | lower != 'http' %}
@@ -39,6 +39,6 @@ destination d_syslog {
 };
 
 log {
-	source(s_src); destination(d_syslog); flags(flow-control);
+	source(s_sys); destination(d_syslog); flags(flow-control);
 };
 {% endif %}
