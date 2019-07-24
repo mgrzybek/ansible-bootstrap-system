@@ -1,15 +1,6 @@
 # {{ ansible_managed }}
 
 {% if bootstrap_syslog_target_protocol | lower == 'http' and bootstrap_syslog_target_log_format | lower == 'gelf' %}
-#
-# https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.16/administration-guide/35#TOPIC-956514
-#
-template t_json_msg {
-	{# dict2items requires ansible >= 2.6 #}
-	{#template("$(format-json --scope all --scope nv_pairs {#% for tag in bootstrap_syslog_additional_tags | dict2items %} --pair {{ tag.key }}={{ tag.value }}{% endfor %} )\n") #}
-	template("$(format-json --scope all --scope nv_pairs {% for tag in bootstrap_syslog_additional_tags %}--pair {{ tag }}={{ bootstrap_syslog_additional_tags[tag] }}{% endfor %})\n")
-}
-
 destination d_http {
 	http(
 		url("http://{{ bootstrap_syslog_target_host }}:{{ bootstrap_syslog_target_port }}/{{ bootstrap_syslog_target_http_path }}")
@@ -26,7 +17,10 @@ destination d_http {
 {% endfor %}
 		)
 {% endif %}
-		body(t_json_msg)
+		{# dict2items requires ansible >= 2.6 #}
+		{# body("$(format-json {#% for tag in bootstrap_syslog_additional_tags | dict2items %} --pair {{ tag.key }}={{ tag.value }}{% endfor %} --pair version='1.1' --pair host='${HOST}' --pair short_message='${MSG}' --pair level=int(${LEVEL_NUM}) --pair timestamp=int64(${R_UNIXTIME}) --pair _program='${PROGRAM}' --pair _pid=int(${PID}) --pair _facility='${FACILITY}' --pair _class='${.classifier.class}' --key _*)") #}
+		# https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.16/administration-guide/35#TOPIC-956514
+		body("$(format-json {% for tag in bootstrap_syslog_additional_tags %}--pair {{ tag }}={{ bootstrap_syslog_additional_tags[tag] }}{% endfor %} --pair version='1.1' --pair host='${HOST}' --pair short_message='${MSG}' --pair level=int(${LEVEL_NUM}) --pair timestamp=int64(${R_UNIXTIME}) --pair _program='${PROGRAM}' --pair _pid=int(${PID}) --pair _facility='${FACILITY}' --pair _class='${.classifier.class}' --key _*)")
 	);
 };
 
