@@ -18,9 +18,9 @@ destination d_http {
 		)
 {% endif %}
 		{# dict2items requires ansible >= 2.6 #}
-		{# body("$(format-json {#% for tag in bootstrap_syslog_additional_tags | dict2items %} --pair {{ tag.key }}={{ tag.value }}{% endfor %} --pair version='1.1' --pair host='${HOST}' --pair short_message='${MSG}' --pair level=int(${LEVEL_NUM}) --pair timestamp=int64(${R_UNIXTIME}) --pair _program='${PROGRAM}' --pair _pid=int(${PID}) --pair _facility='${FACILITY}' --pair _class='${.classifier.class}' --key _*)") #}
+		{# body("$(format-json {#% for tag in bootstrap_syslog_additional_tags | dict2items %} --pair {{ tag.key }}={{ tag.value }}{% endfor %} --pair version='1.1' --pair host='${HOST}' --pair short_message='${MSG}' --pair level=int(${LEVEL_NUM}) --pair timestamp=int64(${R_UNIXTIME}) --pair _programname='${PROGRAM}' --pair _pid=int(${PID}) --pair _facility='${FACILITY}' --pair _class='${.classifier.class}' --key _*)") #}
 		# https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.16/administration-guide/35#TOPIC-956514
-		body("$(format-json {% for tag in bootstrap_syslog_additional_tags %}--pair {{ tag }}={{ bootstrap_syslog_additional_tags[tag] }}{% endfor %} --pair version='1.1' --pair host='${HOST}' --pair short_message='${MSG}' --pair level=int(${LEVEL_NUM}) --pair timestamp=int64(${R_UNIXTIME}) --pair _program='${PROGRAM}' --pair _pid=int(${PID}) --pair _facility='${FACILITY}' --pair _class='${.classifier.class}' --key _*)")
+		body("$(format-json {% for tag in bootstrap_syslog_additional_tags %}--pair {{ tag }}={{ bootstrap_syslog_additional_tags[tag] }}{% endfor %} --pair version='1.1' --pair host='${HOST}' --pair short_message='${MSG}' --pair level=int(${LEVEL_NUM}) --pair timestamp=int64(${R_UNIXTIME}) --pair _programname='${PROGRAM}' --pair _pid=int(${PID}) --pair _facility='${FACILITY}' --pair _class='${.classifier.class}' --key _*)")
 	);
 };
 
