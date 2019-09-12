@@ -210,3 +210,15 @@
         file: "{{ item.file }}"
         baseurl: "{{ item.baseurl }}"
         state: "{{ item.state | default('present') }}"
+
+###############################################################################
+# /etc/hosts configuration
+# Might be useful for the next steps
+
+- name: /etc/hosts configuration
+  when: bootstrap_static_hosts | length > 0
+  lineinfile:
+    path: /etc/hosts
+    state: present
+    line: "{{ item.ip }}    {{ item.hosts | join(' ') }}"
+    regexp: "^{{ item.ip }}"

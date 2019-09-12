@@ -35,4 +35,9 @@ bootstrap_yum_timeout: 600
 
 bootstrap_package_state: present
 
+bootstrap_static_hosts: []
+#bootstrap_static_hosts:
+#    - ip:
+#      hosts: []
+
 cache_timeout: 300

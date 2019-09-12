@@ -36,3 +36,16 @@ Ansible role used to setup a freshly created operating system
             cloud: amazon
             region: us-west-1
             az: seattle
+
+### /etc/hosts configuration
+
+    - name: Do OS-ready configuration
+      hosts: all
+      roles:
+        - role: bootstrap-system
+      vars:
+        bootstrap_static_hosts:
+           - ip: 1.2.3.4
+             hosts:
+               - www.example.org
+               - example.org
