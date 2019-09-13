@@ -217,6 +217,7 @@
 
 - name: /etc/hosts configuration
   when: bootstrap_static_hosts | length > 0
+  with_items: "{{ bootstrap_static_hosts }}"
   lineinfile:
     path: /etc/hosts
     state: present
