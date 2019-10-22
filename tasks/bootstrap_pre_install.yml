@@ -223,3 +223,16 @@
     state: present
     line: "{{ item.ip }}    {{ item.hosts | join(' ') }}"
     regexp: "^{{ item.ip }}"
+
+- name: Create journald values
+  when:
+    - ansible_system | lower == 'linux'
+    - configure_syslog_ng | lower == 'true' or configure_rsyslog | lower == 'true'
+  block:
+    - name: Journald to syslog (yes)
+      when: bootstrap_journald_forward_to_syslog | lower == 'true'
+      set_fact: journald_forward_to_syslog=yes
+
+    - name: Journald to syslog (no)
+      when: bootstrap_journald_forward_to_syslog | lower == 'false'
+      set_fact: journald_forward_to_syslog=no

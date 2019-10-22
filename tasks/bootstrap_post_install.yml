@@ -105,3 +105,12 @@
       notify: restart ntpdate
 
 # TODO: for systemd-timesyncd.service, use timedatectl set-ntp yes
+
+- when: journald_forward_to_syslog is defined
+  block:
+    - name: Configure Journald to syslog
+      ini_file:
+        path: /etc/systemd/journald.conf
+        section: Journal
+        option: ForwardToSyslog
+        value: "{{ journald_forward_to_syslog }}"

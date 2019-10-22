@@ -25,6 +25,8 @@ bootstrap_syslog_target_http_headers: {}
 
 bootstrap_syslog_additional_tags: {}
 
+bootstrap_journald_forward_to_syslog: true
+
 bootstrap_set_hostname_from_inventory: false
 bootstrap_hostname: "{{ inventory_hostname }}"
 
