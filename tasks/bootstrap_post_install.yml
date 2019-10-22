@@ -109,6 +109,7 @@
 - when: journald_forward_to_syslog is defined
   block:
     - name: Configure Journald to syslog
+      notify: restart journald
       ini_file:
         path: /etc/systemd/journald.conf
         section: Journal
