@@ -9,6 +9,14 @@
 - name: restart ntpdate
   service: name=ntpdate.service state=restarted enabled=yes
 
+- name: restart ntpd
+  service: name=ntpdate.service state=restarted enabled=yes
+  when: ansible_os_family | lower == 'redhat'
+
+- name: restart openntpd
+  service: name=openntpd.service state=restarted enabled=yes
+  when: ansible_os_family | lower == 'debian'
+ 
 - name: restart htpdate
   service: name=htpdate.service state=restarted enabled=yes
 

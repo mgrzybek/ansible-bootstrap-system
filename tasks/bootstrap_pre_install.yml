@@ -10,6 +10,16 @@
     - bootstrap_htpdate_servers | length > 0
     - bootstrap_ntpdate_servers | length > 0
 
+- name: Check ntpdate values
+  fail: msg="NTP servers must not be empty"
+  when: item | length < 1
+  with_items: "{{ bootstrap_ntpdate_servers }}"
+
+- name: Check htpdate values
+  fail: msg="HTP servers must be valid URL endpoints"
+  when: item | urlsplit('hostname') == None or (item | urlsplit('scheme') != 'http' and item | urlsplit('scheme') != 'https')
+  with_items: "{{ bootstrap_htpdate_servers }}"
+
 - name: Check syslog remote target
   fail: msg="a syslog remote target must be given if local logs are purged"
   run_once: true

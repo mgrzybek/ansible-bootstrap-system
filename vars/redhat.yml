@@ -12,6 +12,8 @@ bootstrap_remote_distro_packages: []
 bootstrap_ntpdate_distro_packages:
     - ntpdate
 
+bootstrap_ntpdate_conf_file: /etc/ntpd/ntpd.conf
+
 bootstrap_sysconfig_path: /etc/sysconfig
 
 bootstrap_distro_packages: []

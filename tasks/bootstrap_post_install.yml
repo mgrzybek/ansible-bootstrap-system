@@ -101,8 +101,10 @@
 - when: configure_ntp | lower == 'true'
   block:
     - name: NTP configuration
-      template: src=ntp.conf.j2 dest=/etc/ntp.conf
-      notify: restart ntpdate
+      template: src=ntp.conf.j2 dest={{ bootstrap_ntpdate_conf_file }}
+      notify:
+        - restart ntpd
+        - restart openntpd
 
 # TODO: for systemd-timesyncd.service, use timedatectl set-ntp yes
 
