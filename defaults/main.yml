@@ -43,3 +43,8 @@ bootstrap_static_hosts: []
 #      hosts: []
 
 cache_timeout: 300
+
+bootstrap_remote_distro_packages: []
+bootstrap_distro_packages: []
+bootstrap_distro_remove_packages: []
+
