@@ -7,15 +7,12 @@ bootstrap_fastestmirror:
 bootstrap_htpdate_distro_packages:
     - htpdate
 
-bootstrap_remote_distro_packages: []
-
 bootstrap_ntpdate_distro_packages:
     - ntpdate
 
-bootstrap_sysconfig_path: /etc/sysconfig
+bootstrap_ntpdate_conf_file: /etc/ntpd/ntpd.conf
 
-bootstrap_distro_packages: []
-bootstrap_distro_remove_packages: []
+bootstrap_sysconfig_path: /etc/sysconfig
 
 bootstrap_yum_repos: []
 

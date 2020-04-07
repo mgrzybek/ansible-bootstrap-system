@@ -3,14 +3,11 @@
 bootstrap_htpdate_distro_packages:
     - htpdate
 
-bootstrap_remote_distro_packages: []
-
 bootstrap_ntpdate_distro_packages:
-    - ntpdate
+    - openntpd
+
+bootstrap_ntpdate_conf_file: /etc/openntpd/ntpd.conf
 
 bootstrap_sysconfig_path: /etc/default
-
-bootstrap_distro_packages: []
-bootstrap_distro_remove_packages: []
 
 bootstrap_htpdate_bin: /usr/sbin/htpdate

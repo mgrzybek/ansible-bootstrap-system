@@ -1,4 +1,5 @@
 # {{ ansible_managed }}
+{% if ansible_os_family | lower == 'redhat' %}
 # /etc/ntp.conf, configuration for ntpd; see ntp.conf(5) for help
 
 driftfile /var/lib/ntp/ntp.drift
@@ -34,3 +35,18 @@ restrict ::1
 
 # Needed for adding pool entries
 restrict source notrap nomodify noquery
+{% else %}
+# Listen on localhost only
+listen on 127.0.0.1
+listen on ::1
+
+# Limit queries from localhost only
+query from 127.0.0.1
+query from ::1
+
+sensor *
+
+{% for item in bootstrap_ntpdate_servers %}
+servers {{ item }}
+{% endfor %}
+{% endif %}
