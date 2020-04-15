@@ -5,6 +5,6 @@
 Acquire::http::Proxy::{{ proxy_conf.host }} "{{ proxy_conf.proxy }}";
 {% endfor %}
 {% endif %}
-{% if bootstrap_http_proxy_packages != None %}
+{% if bootstrap_http_proxy_packages != None and bootstrap_http_proxy_packages | length > 0 %}
 Acquire::http::Proxy "{{ bootstrap_http_proxy_packages }}";
 {% endif %}
