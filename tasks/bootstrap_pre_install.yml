@@ -10,10 +10,10 @@
     - bootstrap_htpdate_servers | length > 0
     - bootstrap_ntpdate_servers | length > 0
 
-- name: Check ntpdate values
-  fail: msg="NTP servers must not be empty"
-  when: item | length < 1
-  with_items: "{{ bootstrap_ntpdate_servers }}"
+#- name: Check ntpdate values
+#  fail: msg="NTP servers must not be empty"
+#  when: item | length < 1
+#  with_items: "{{ bootstrap_ntpdate_servers }}"
 
 - name: Check htpdate values
   fail: msg="HTP servers must be valid URL endpoints"
