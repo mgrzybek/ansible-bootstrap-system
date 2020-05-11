@@ -78,6 +78,10 @@
       template: src=syslog-ng-remote.conf.j2 dest=/etc/syslog-ng/conf.d/99-remote.conf
       notify: restart syslog-ng
 
+    - name: Add debug mode for syslog-ng
+      when: bootstrap_syslog_debug | bool == true
+      command: /usr/sbin/syslog-ng-ctl verbose --set=on
+
 - when: configure_hostname | lower == 'true'
   name: Set hostname according to the inventory
   hostname: name="{{ bootstrap_hostname }}"
