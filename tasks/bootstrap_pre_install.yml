@@ -146,6 +146,7 @@
         - configure_syslog_ng | bool == true
 
     - name: Set local fact for syslog-ng version
+      when: configure_syslog_ng | bool == true
       set_fact:
         syslog_ng_version: "{{ syslog_ng_result.stdout }}"
 
