@@ -132,13 +132,22 @@
         - bootstrap_syslog_target_host != None
         - syslog_ng_result.stdout.find('syslog-ng') > -1
 
+    - name: Get syslog-ng version
+      when: configure_syslog_ng | bool == true
+      register: syslog_ng_result
+      shell: syslog-ng --version | awk '/^syslog-ng/ { print $2 }'
+
     - name: Set local fact for local logs
       set_fact:
         purge_local_logs: true
       when:
         - bootstrap_syslog_target_host != None
         - bootstrap_syslog_disable_local_storage | lower == 'true'
-        - syslog_ng_result.stdout.find('syslog-ng') > -1
+        - configure_syslog_ng | bool == true
+
+    - name: Set local fact for syslog-ng version
+      set_fact:
+        syslog_ng_version: "{{ syslog_ng_result.stdout }}"
 
 - name: Set local fact for hostname configuration
   when:
