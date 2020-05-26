@@ -125,3 +125,10 @@
         section: Journal
         option: ForwardToSyslog
         value: "{{ journald_forward_to_syslog }}"
+
+- when: configure_selinux | lower == 'true'
+  block:
+    - name: Change selinux configuration
+      selinux:
+        state: "{{ bootstrap_selinux_config_mode }}"
+

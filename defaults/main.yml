@@ -49,3 +49,5 @@ bootstrap_remote_distro_packages: []
 bootstrap_distro_packages: []
 bootstrap_distro_remove_packages: []
 
+bootstrap_selinux_config_mode: enforcing
+

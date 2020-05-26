@@ -40,7 +40,7 @@
     configure_syslog_ng: false
     configure_hostname: false
     configure_htp: false
-    configure_ntp: false
+    configure_selinux: false
     purge_local_logs: false
 
 - name: Check git binary
@@ -256,3 +256,14 @@
     - name: Journald to syslog (no)
       when: bootstrap_journald_forward_to_syslog | lower == 'false'
       set_fact: journald_forward_to_syslog=no
+
+###############################################################################
+# selinux configuration
+
+- name: Set selinux mode
+  when:
+    - ansible_selinux is defined
+    - ansible_selinux.config_mode
+    - ansible_selinux.config_mode != bootstrap_selinux_config_mode
+  set_fact: configure_selinux = true
+
