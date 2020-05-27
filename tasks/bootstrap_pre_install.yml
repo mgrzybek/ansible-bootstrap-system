@@ -40,6 +40,7 @@
     configure_syslog_ng: false
     configure_hostname: false
     configure_htp: false
+    configure_ntp: false
     configure_selinux: false
     purge_local_logs: false
 
