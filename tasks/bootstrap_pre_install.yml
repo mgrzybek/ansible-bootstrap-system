@@ -263,7 +263,7 @@
 - name: Set selinux mode
   when:
     - ansible_selinux is defined
-    - ansible_selinux.config_mode
+    - ansible_selinux.config_mode is defined
     - ansible_selinux.config_mode != bootstrap_selinux_config_mode
   set_fact: configure_selinux = true
 
