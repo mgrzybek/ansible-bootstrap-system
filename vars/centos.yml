@@ -8,9 +8,9 @@ bootstrap_htpdate_distro_packages:
     - htpdate
 
 bootstrap_ntpdate_distro_packages:
-    - ntp
+    - chrony
 
-bootstrap_ntpdate_conf_file: /etc/ntp.conf
+bootstrap_ntpdate_conf_file: /etc/chrony.conf
 
 bootstrap_sysconfig_path: /etc/sysconfig
 

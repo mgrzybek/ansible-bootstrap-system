@@ -109,10 +109,16 @@
 - when: configure_ntp | lower == 'true'
   block:
     - name: NTP configuration
+      when: ansible_pkg_mgr == 'deb'
       template: src=ntp.conf.j2 dest={{ bootstrap_ntpdate_conf_file }}
       notify:
-        - restart ntpd
         - restart openntpd
+
+    - name: Chrony configuration
+      when: ansible_pkg_mgr == 'rpm'
+      template: src=chrony.conf.j2 dest={{ bootstrap_ntpdate_conf_file }}
+      notify:
+        - restart chronyd
 
 # TODO: for systemd-timesyncd.service, use timedatectl set-ntp yes
 
