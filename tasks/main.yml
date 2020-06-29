@@ -1,24 +1,22 @@
----
-
 - name: Get OS-specific variables
-  include_vars: "{{ item }}"
+  include_vars: '{{ item }}'
   with_first_found:
-    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
-    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
-    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
-    - "{{ ansible_distribution | lower }}.yml"
-    - "{{ ansible_os_family | lower }}.yml"
+  - '{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml'
+  - '{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml'
+  - '{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml'
+  - '{{ ansible_distribution | lower }}.yml'
+  - '{{ ansible_os_family | lower }}.yml'
   tags:
-    - always
+  - always
 
 - include: bootstrap_pre_install.yml
   tags:
-    - bootstrap-pre-install
+  - bootstrap-pre-install
 
 - include: bootstrap_install.yml
   tags:
-    - bootstrap-install
+  - bootstrap-install
 
 - include: bootstrap_post_install.yml
   tags:
-    - bootstrap-post-install
+  - bootstrap-post-install

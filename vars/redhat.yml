@@ -1,14 +1,12 @@
----
-
 bootstrap_fastestmirror:
   include_only: []
   exclude: []
 
 bootstrap_htpdate_distro_packages:
-    - htpdate
+- htpdate
 
 bootstrap_ntpdate_distro_packages:
-    - chrony
+- chrony
 
 bootstrap_ntpdate_conf_file: /etc/chrony.conf
 

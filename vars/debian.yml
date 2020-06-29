@@ -1,10 +1,8 @@
----
-
 bootstrap_htpdate_distro_packages:
-    - htpdate
+- htpdate
 
 bootstrap_ntpdate_distro_packages:
-    - openntpd
+- openntpd
 
 bootstrap_ntpdate_conf_file: /etc/openntpd/ntpd.conf
 

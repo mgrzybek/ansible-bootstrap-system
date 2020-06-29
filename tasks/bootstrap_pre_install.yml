@@ -1,5 +1,3 @@
----
-
 ###############################################################################
 # Checks
 #
@@ -7,8 +5,8 @@
   fail: msg="htpdate et ntpdate cannot be used together"
   run_once: true
   when:
-    - bootstrap_htpdate_servers | length > 0
-    - bootstrap_ntpdate_servers | length > 0
+  - bootstrap_htpdate_servers | length > 0
+  - bootstrap_ntpdate_servers | length > 0
 
 #- name: Check ntpdate values
 #  fail: msg="NTP servers must not be empty"
@@ -18,14 +16,14 @@
 - name: Check htpdate values
   fail: msg="HTP servers must be valid URL endpoints"
   when: item | urlsplit('hostname') == None or (item | urlsplit('scheme') != 'http' and item | urlsplit('scheme') != 'https')
-  with_items: "{{ bootstrap_htpdate_servers }}"
+  with_items: '{{ bootstrap_htpdate_servers }}'
 
 - name: Check syslog remote target
   fail: msg="a syslog remote target must be given if local logs are purged"
   run_once: true
   when:
-    - bootstrap_syslog_disable_local_storage | lower == 'true'
-    - bootstrap_syslog_target_host | length == 0
+  - bootstrap_syslog_disable_local_storage | lower == 'true'
+  - bootstrap_syslog_target_host | length == 0
 
 ###############################################################################
 # Facts
@@ -47,114 +45,114 @@
 - name: Check git binary
   tags: bootstrap-git
   block:
-    - name: Check git presence
-      shell: which git || exit 0
-      register: git_result
+  - name: Check git presence
+    shell: which git || exit 0
+    register: git_result
 
-    - name: Set local fact for git (https)
-      set_fact:
-        configure_git_https: true
-      when:
-        - git_result.stdout.find('git') > -1 or "git" in bootstrap_distro_packages
-        - bootstrap_https_proxy_git != None
-        - bootstrap_https_proxy_git | length > 8
+  - name: Set local fact for git (https)
+    set_fact:
+      configure_git_https: true
+    when:
+    - git_result.stdout.find('git') > -1 or "git" in bootstrap_distro_packages
+    - bootstrap_https_proxy_git != None
+    - bootstrap_https_proxy_git | length > 8
 
-    - name: Set local fact for git (http)
-      set_fact:
-        configure_git_http: true
-      when:
-        - git_result.stdout.find('git') > -1 or "git" in bootstrap_distro_packages
-        - bootstrap_http_proxy_git != None
-        - bootstrap_http_proxy_git | length > 8
+  - name: Set local fact for git (http)
+    set_fact:
+      configure_git_http: true
+    when:
+    - git_result.stdout.find('git') > -1 or "git" in bootstrap_distro_packages
+    - bootstrap_http_proxy_git != None
+    - bootstrap_http_proxy_git | length > 8
 
 - name: Check pip binary
   tags: bootstrap-pip
   block:
-    - name: Check pip and virtualenv presence
-      shell: (which virtualenv || which pip) 2>&1 >/dev/null && echo ok || exit 0
-      register: pip_result
+  - name: Check pip and virtualenv presence
+    shell: (which virtualenv || which pip) 2>&1 >/dev/null && echo ok || exit 0
+    register: pip_result
 
-    - name: Check pip presence
-      set_fact:
-        configure_pip: true
-      when:
-        - pip_result.stdout.find('ok') > -1
-        - bootstrap_http_proxy_pip != None
-        - bootstrap_http_proxy_pip | length > 8
+  - name: Check pip presence
+    set_fact:
+      configure_pip: true
+    when:
+    - pip_result.stdout.find('ok') > -1
+    - bootstrap_http_proxy_pip != None
+    - bootstrap_http_proxy_pip | length > 8
 
 - name: Check cargo binary
   tags: bootstrap-cargo
   block:
-    - name: Check cargo presence
-      shell: which cargo || exit 0
-      register: cargo_result
+  - name: Check cargo presence
+    shell: which cargo || exit 0
+    register: cargo_result
 
-    - name: Set local fact for cargo
-      set_fact:
-        configure_cargo: true
-      when:
-        - cargo_result.stdout.find('cargo') > -1
-        - bootstrap_http_proxy_cargo != None
-        - bootstrap_http_proxy_cargo | length > 0
+  - name: Set local fact for cargo
+    set_fact:
+      configure_cargo: true
+    when:
+    - cargo_result.stdout.find('cargo') > -1
+    - bootstrap_http_proxy_cargo != None
+    - bootstrap_http_proxy_cargo | length > 0
 
 - name: Check rsyslog service
   tags: bootstrap-rsyslog
   block:
-    - name: Check rsyslog presence
-      shell: which rsyslogd || exit 0
-      register: rsyslog_result
+  - name: Check rsyslog presence
+    shell: which rsyslogd || exit 0
+    register: rsyslog_result
 
-    - name: Set local fact for rsyslog
-      set_fact:
-        configure_rsyslog: true
-      when:
-        - bootstrap_syslog_target_host != None
-        - rsyslog_result.stdout.find('rsyslogd') > -1
+  - name: Set local fact for rsyslog
+    set_fact:
+      configure_rsyslog: true
+    when:
+    - bootstrap_syslog_target_host != None
+    - rsyslog_result.stdout.find('rsyslogd') > -1
 
-    - name: Set local fact for local logs
-      set_fact:
-        purge_local_logs: true
-      when:
-        - bootstrap_syslog_target_host != None
-        - bootstrap_syslog_disable_local_storage | lower == 'true'
-        - rsyslog_result.stdout.find('rsyslogd') > -1
+  - name: Set local fact for local logs
+    set_fact:
+      purge_local_logs: true
+    when:
+    - bootstrap_syslog_target_host != None
+    - bootstrap_syslog_disable_local_storage | lower == 'true'
+    - rsyslog_result.stdout.find('rsyslogd') > -1
 
 - name: Check syslog-ng service
   tags: bootstrap-syslog-ng
   block:
-    - name: Check syslog-ng presence
-      shell: which syslog-ng || exit 0
-      register: syslog_ng_result
+  - name: Check syslog-ng presence
+    shell: which syslog-ng || exit 0
+    register: syslog_ng_result
 
-    - name: Set local fact for syslog-ng
-      set_fact:
-        configure_syslog_ng: true
-      when:
-        - bootstrap_syslog_target_host != None
-        - syslog_ng_result.stdout.find('syslog-ng') > -1
+  - name: Set local fact for syslog-ng
+    set_fact:
+      configure_syslog_ng: true
+    when:
+    - bootstrap_syslog_target_host != None
+    - syslog_ng_result.stdout.find('syslog-ng') > -1
 
-    - name: Get syslog-ng version
-      when: configure_syslog_ng | bool == true
-      register: syslog_ng_result
-      shell: syslog-ng --version | awk '/^syslog-ng/ { print $2 }'
+  - name: Get syslog-ng version
+    when: configure_syslog_ng | bool == true
+    register: syslog_ng_result
+    shell: syslog-ng --version | awk '/^syslog-ng/ { print $2 }'
 
-    - name: Set local fact for local logs
-      set_fact:
-        purge_local_logs: true
-      when:
-        - bootstrap_syslog_target_host != None
-        - bootstrap_syslog_disable_local_storage | lower == 'true'
-        - configure_syslog_ng | bool == true
+  - name: Set local fact for local logs
+    set_fact:
+      purge_local_logs: true
+    when:
+    - bootstrap_syslog_target_host != None
+    - bootstrap_syslog_disable_local_storage | lower == 'true'
+    - configure_syslog_ng | bool == true
 
-    - name: Set local fact for syslog-ng version
-      when: configure_syslog_ng | bool == true
-      set_fact:
-        syslog_ng_version: "{{ syslog_ng_result.stdout }}"
+  - name: Set local fact for syslog-ng version
+    when: configure_syslog_ng | bool == true
+    set_fact:
+      syslog_ng_version: '{{ syslog_ng_result.stdout }}'
 
 - name: Set local fact for hostname configuration
   when:
-    - bootstrap_set_hostname_from_inventory | lower == 'true'
-    - bootstrap_hostname != 'localhost'
+  - bootstrap_set_hostname_from_inventory | lower == 'true'
+  - bootstrap_hostname != 'localhost'
   set_fact:
     configure_hostname: true
 
@@ -180,57 +178,57 @@
 - name: HTTP configuration for yum
   when: ansible_os_family | lower == 'redhat'
   block:
-    - name: Set yum's proxy
-      when:
-        - bootstrap_http_proxy_packages != None
-        - bootstrap_http_proxy_packages is search('http')
-      ini_file:
-        path: /etc/yum.conf
-        section: main
-        option: proxy
-        no_extra_spaces: yes
-        value: "{{ bootstrap_http_proxy_packages }}"
-      tags: bootstrap-proxy-package
+  - name: Set yum's proxy
+    when:
+    - bootstrap_http_proxy_packages != None
+    - bootstrap_http_proxy_packages is search('http')
+    ini_file:
+      path: /etc/yum.conf
+      section: main
+      option: proxy
+      no_extra_spaces: yes
+      value: '{{ bootstrap_http_proxy_packages }}'
+    tags: bootstrap-proxy-package
 
-    - name: Set yum's timeout
-      ini_file:
-        path: /etc/yum.conf
-        section: main
-        option: timeout
-        no_extra_spaces: yes
-        value: "{{ bootstrap_yum_timeout }}"
-      tags: bootstrap-repo-timeout
+  - name: Set yum's timeout
+    ini_file:
+      path: /etc/yum.conf
+      section: main
+      option: timeout
+      no_extra_spaces: yes
+      value: '{{ bootstrap_yum_timeout }}'
+    tags: bootstrap-repo-timeout
 
-    - name: Set fatestmirror preferences (include)
-      ini_file:
-        path: /etc/yum/pluginconf.d/fastestmirror.conf
-        state: present
-        section: main
-        option: include_only
-        value: "{{ bootstrap_fastestmirror.include_only|join(',') }}"
-      when: bootstrap_fastestmirror.include_only|length > 0
-      tags: bootstrap-repo-package
+  - name: Set fatestmirror preferences (include)
+    ini_file:
+      path: /etc/yum/pluginconf.d/fastestmirror.conf
+      state: present
+      section: main
+      option: include_only
+      value: "{{ bootstrap_fastestmirror.include_only|join(',') }}"
+    when: bootstrap_fastestmirror.include_only|length > 0
+    tags: bootstrap-repo-package
 
-    - name: Set fatestmirror preferences (exclude)
-      when:
-        - bootstrap_fastestmirror.exclude | length > 0
-      tags: bootstrap-repo-package
-      ini_file:
-        path: /etc/yum/pluginconf.d/fastestmirror.conf
-        state: present
-        section: main
-        option: exclude
-        value: "{{ bootstrap_fastestmirror.exclude|join(',') }}"
+  - name: Set fatestmirror preferences (exclude)
+    when:
+    - bootstrap_fastestmirror.exclude | length > 0
+    tags: bootstrap-repo-package
+    ini_file:
+      path: /etc/yum/pluginconf.d/fastestmirror.conf
+      state: present
+      section: main
+      option: exclude
+      value: "{{ bootstrap_fastestmirror.exclude|join(',') }}"
 
-    - name: set yum's repositories
-      with_items: "{{ bootstrap_yum_repos }}"
-      tags: bootstrap-repo-package
-      yum_repository:
-        name: "{{ item.name }}"
-        description: "{{ item.description | default('') }}"
-        file: "{{ item.file }}"
-        baseurl: "{{ item.baseurl }}"
-        state: "{{ item.state | default('present') }}"
+  - name: set yum's repositories
+    with_items: '{{ bootstrap_yum_repos }}'
+    tags: bootstrap-repo-package
+    yum_repository:
+      name: '{{ item.name }}'
+      description: "{{ item.description | default('') }}"
+      file: '{{ item.file }}'
+      baseurl: '{{ item.baseurl }}'
+      state: "{{ item.state | default('present') }}"
 
 ###############################################################################
 # /etc/hosts configuration
@@ -238,33 +236,33 @@
 
 - name: /etc/hosts configuration
   when: bootstrap_static_hosts | length > 0
-  with_items: "{{ bootstrap_static_hosts }}"
+  with_items: '{{ bootstrap_static_hosts }}'
   lineinfile:
     path: /etc/hosts
     state: present
     line: "{{ item.ip }}    {{ item.hosts | join(' ') }}"
-    regexp: "^{{ item.ip }}"
+    regexp: ^{{ item.ip }}
 
 - name: Create journald values
   when:
-    - ansible_system | lower == 'linux'
-    - configure_syslog_ng | lower == 'true' or configure_rsyslog | lower == 'true'
+  - ansible_system | lower == 'linux'
+  - configure_syslog_ng | lower == 'true' or configure_rsyslog | lower == 'true'
   block:
-    - name: Journald to syslog (yes)
-      when: bootstrap_journald_forward_to_syslog | lower == 'true'
-      set_fact: journald_forward_to_syslog=yes
+  - name: Journald to syslog (yes)
+    when: bootstrap_journald_forward_to_syslog | lower == 'true'
+    set_fact: journald_forward_to_syslog=yes
 
-    - name: Journald to syslog (no)
-      when: bootstrap_journald_forward_to_syslog | lower == 'false'
-      set_fact: journald_forward_to_syslog=no
+  - name: Journald to syslog (no)
+    when: bootstrap_journald_forward_to_syslog | lower == 'false'
+    set_fact: journald_forward_to_syslog=no
 
 ###############################################################################
 # selinux configuration
 
 - name: Set selinux mode
   when:
-    - ansible_selinux is defined
-    - ansible_selinux.config_mode is defined
-    - ansible_selinux.config_mode != bootstrap_selinux_config_mode
+  - ansible_selinux is defined
+  - ansible_selinux.config_mode is defined
+  - ansible_selinux.config_mode != bootstrap_selinux_config_mode
   set_fact: configure_selinux = true
 

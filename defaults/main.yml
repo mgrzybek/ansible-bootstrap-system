@@ -1,13 +1,11 @@
----
-
 bootstrap_http_proxy:
 
-bootstrap_http_proxy_pip: "{{ bootstrap_http_proxy }}"
-bootstrap_http_proxy_git: "{{ bootstrap_http_proxy }}"
-bootstrap_https_proxy_git: "{{ bootstrap_http_proxy }}"
-bootstrap_http_proxy_cargo: "{{ bootstrap_http_proxy }}"
-bootstrap_http_proxy_packages: "{{ bootstrap_http_proxy }}"
-bootstrap_http_proxy_htpdate: "{{ bootstrap_http_proxy }}"
+bootstrap_http_proxy_pip: '{{ bootstrap_http_proxy }}'
+bootstrap_http_proxy_git: '{{ bootstrap_http_proxy }}'
+bootstrap_https_proxy_git: '{{ bootstrap_http_proxy }}'
+bootstrap_http_proxy_cargo: '{{ bootstrap_http_proxy }}'
+bootstrap_http_proxy_packages: '{{ bootstrap_http_proxy }}'
+bootstrap_http_proxy_htpdate: '{{ bootstrap_http_proxy }}'
 
 bootstrap_http_proxy_packages_per_repo: []
 #  - host: "archive.ubuntu.com"
@@ -29,7 +27,7 @@ bootstrap_syslog_debug: false
 bootstrap_journald_forward_to_syslog: true
 
 bootstrap_set_hostname_from_inventory: false
-bootstrap_hostname: "{{ inventory_hostname }}"
+bootstrap_hostname: '{{ inventory_hostname }}'
 
 bootstrap_htpdate_servers: []
 bootstrap_ntpdate_servers: []

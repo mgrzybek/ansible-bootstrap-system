@@ -1,90 +1,88 @@
----
-
 - tags: bootstrap-git
   block:
-    - name: HTTP proxy for git
-      when: configure_git_http | lower == 'true'
-      git_config:
-        scope: system
-        name: http.proxy
-        value: "{{ bootstrap_http_proxy_git }}"
+  - name: HTTP proxy for git
+    when: configure_git_http | lower == 'true'
+    git_config:
+      scope: system
+      name: http.proxy
+      value: '{{ bootstrap_http_proxy_git }}'
 
-    - name: HTTPS proxy for git
-      when: configure_git_https | lower == 'true'
-      git_config:
-        scope: system
-        name: https.proxy
-        value: "{{ bootstrap_https_proxy_git }}"
+  - name: HTTPS proxy for git
+    when: configure_git_https | lower == 'true'
+    git_config:
+      scope: system
+      name: https.proxy
+      value: '{{ bootstrap_https_proxy_git }}'
 
 - when: configure_pip | lower == 'true'
   tags: bootstrap-pip
   block:
-    - name: HTTP proxy for pip (directories)
-      file: path="{{ item.home }}/.config/pip" owner={{ item.user }} state=directory
-      with_items:
-        - user: root
-          home: /root
-        - user: "{{ ansible_env['SUDO_USER'] }}"
-          home: "{{ ansible_env['PWD'] }}"
+  - name: HTTP proxy for pip (directories)
+    file: path="{{ item.home }}/.config/pip" owner={{ item.user }} state=directory
+    with_items:
+    - user: root
+      home: /root
+    - user: "{{ ansible_env['SUDO_USER'] }}"
+      home: "{{ ansible_env['PWD'] }}"
 
-    - name: HTTP proxy for pip (files)
-      ini_file:
-        path: "{{ item.home }}/.config/pip/pip.conf"
-        section: global
-        option: proxy
-        value: "{{ bootstrap_http_proxy_pip }}"
-        mode: 0644
-        owner: "{{ item.user }}"
-      with_items:
-        - user: root
-          home: /root
-        - user: "{{ ansible_env['SUDO_USER'] }}"
-          home: "{{ ansible_env['PWD'] }}"
+  - name: HTTP proxy for pip (files)
+    ini_file:
+      path: '{{ item.home }}/.config/pip/pip.conf'
+      section: global
+      option: proxy
+      value: '{{ bootstrap_http_proxy_pip }}'
+      mode: 0644
+      owner: '{{ item.user }}'
+    with_items:
+    - user: root
+      home: /root
+    - user: "{{ ansible_env['SUDO_USER'] }}"
+      home: "{{ ansible_env['PWD'] }}"
 
 - when: configure_cargo | lower == 'true'
   tags: bootstrap-cargo
   block:
-    - name: HTTP proxy for cargo (directories)
-      file:
-        path: "{{ ansible_env['HOME'] }}/.cargo"
-        owner: "{{ ansible_user }}"
-        state: directory
+  - name: HTTP proxy for cargo (directories)
+    file:
+      path: "{{ ansible_env['HOME'] }}/.cargo"
+      owner: '{{ ansible_user }}'
+      state: directory
 
-    - name: HTTP proxy for cargo (files)
-      ini_file:
-        path: "{{ item.home }}/.cargo/config"
-        section: http
-        option: proxy
-        value: "{{ bootstrap_http_proxy_cargo | urlsplit('hostname') }}/{{ bootstrap_http_proxy_cargo | urlsplit('port') }}"
-        mode: 0644
-        owner: "{{ item.user }}"
-      with_items:
-        - user: root
-          home: /root
-        - user: "{{ ansible_env['SUDO_USER'] }}"
-          home: "{{ ansible_env['PWD'] }}"
+  - name: HTTP proxy for cargo (files)
+    ini_file:
+      path: '{{ item.home }}/.cargo/config'
+      section: http
+      option: proxy
+      value: "{{ bootstrap_http_proxy_cargo | urlsplit('hostname') }}/{{ bootstrap_http_proxy_cargo | urlsplit('port') }}"
+      mode: 0644
+      owner: '{{ item.user }}'
+    with_items:
+    - user: root
+      home: /root
+    - user: "{{ ansible_env['SUDO_USER'] }}"
+      home: "{{ ansible_env['PWD'] }}"
 
 - when: configure_rsyslog | lower == 'true'
   tags: bootstrap-rsyslog
   block:
-    - name: Set a remote target for rsyslog
-      template: src=rsyslog-remote.conf.j2 dest=/etc/rsyslog.d/99-remote.conf
-      notify: restart rsyslog
+  - name: Set a remote target for rsyslog
+    template: src=rsyslog-remote.conf.j2 dest=/etc/rsyslog.d/99-remote.conf
+    notify: restart rsyslog
 
 - when: configure_syslog_ng | lower == 'true'
   tags: bootstrap-syslog-ng
   block:
-    - name: Set a remote target for syslog-ng
-      template: src=syslog-ng-remote.conf.j2 dest=/etc/syslog-ng/conf.d/99-remote.conf
-      notify: restart syslog-ng
+  - name: Set a remote target for syslog-ng
+    template: src=syslog-ng-remote.conf.j2 dest=/etc/syslog-ng/conf.d/99-remote.conf
+    notify: restart syslog-ng
 
-    - name: Flush handlers to enable syslog-ng debug mode
-      when: bootstrap_syslog_debug | bool == true
-      meta: flush_handlers
+  - name: Flush handlers to enable syslog-ng debug mode
+    when: bootstrap_syslog_debug | bool == true
+    meta: flush_handlers
 
-    - name: Add debug mode for syslog-ng
-      when: bootstrap_syslog_debug | bool == true
-      command: /usr/sbin/syslog-ng-ctl debug --set=on
+  - name: Add debug mode for syslog-ng
+    when: bootstrap_syslog_debug | bool == true
+    command: /usr/sbin/syslog-ng-ctl debug --set=on
 
 - when: configure_hostname | lower == 'true'
   name: Set hostname according to the inventory
@@ -92,49 +90,49 @@
 
 - when: configure_htp | lower == 'true'
   block:
-    - name: HTP configuration
-      template: src={{ item.src }} dest={{ item.dest }}
-      register: htpdate_conf
-      notify: restart htpdate
-      with_items:
-        - src: htpdate.j2
-          dest: "{{ bootstrap_sysconfig_path }}/htpdate"
-        - src: htpdate.service.j2
-          dest: /etc/systemd/system/htpdate.service
+  - name: HTP configuration
+    template: src={{ item.src }} dest={{ item.dest }}
+    register: htpdate_conf
+    notify: restart htpdate
+    with_items:
+    - src: htpdate.j2
+      dest: '{{ bootstrap_sysconfig_path }}/htpdate'
+    - src: htpdate.service.j2
+      dest: /etc/systemd/system/htpdate.service
 
-    - name: Systemd reload
-      systemd: daemon-reload=yes
-      when: htpdate_conf is changed
+  - name: Systemd reload
+    systemd: daemon-reload=yes
+    when: htpdate_conf is changed
 
 - when: configure_ntp | lower == 'true'
   block:
-    - name: NTP configuration
-      when: ansible_pkg_mgr == 'deb'
-      template: src=ntp.conf.j2 dest={{ bootstrap_ntpdate_conf_file }}
-      notify:
-        - restart openntpd
+  - name: NTP configuration
+    when: ansible_pkg_mgr == 'deb'
+    template: src=ntp.conf.j2 dest={{ bootstrap_ntpdate_conf_file }}
+    notify:
+    - restart openntpd
 
-    - name: Chrony configuration
-      when: ansible_pkg_mgr == 'rpm'
-      template: src=chrony.conf.j2 dest={{ bootstrap_ntpdate_conf_file }}
-      notify:
-        - restart chronyd
+  - name: Chrony configuration
+    when: ansible_pkg_mgr == 'rpm'
+    template: src=chrony.conf.j2 dest={{ bootstrap_ntpdate_conf_file }}
+    notify:
+    - restart chronyd
 
 # TODO: for systemd-timesyncd.service, use timedatectl set-ntp yes
 
 - when: journald_forward_to_syslog is defined
   block:
-    - name: Configure Journald to syslog
-      notify: restart journald
-      ini_file:
-        path: /etc/systemd/journald.conf
-        section: Journal
-        option: ForwardToSyslog
-        value: "{{ journald_forward_to_syslog }}"
+  - name: Configure Journald to syslog
+    notify: restart journald
+    ini_file:
+      path: /etc/systemd/journald.conf
+      section: Journal
+      option: ForwardToSyslog
+      value: '{{ journald_forward_to_syslog }}'
 
 - when: configure_selinux | lower == 'true'
   block:
-    - name: Change selinux configuration
-      selinux:
-        state: "{{ bootstrap_selinux_config_mode }}"
+  - name: Change selinux configuration
+    selinux:
+      state: '{{ bootstrap_selinux_config_mode }}'
 
