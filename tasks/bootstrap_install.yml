@@ -1,4 +1,4 @@
- -name: Install | Install htpdate packages
+- name: Install | Install htpdate packages
   package:
     name: '{{ bootstrap_htpdate_distro_packages }}'
     state: '{{ bootstrap_package_state }}'
@@ -14,7 +14,7 @@
   - install-yum
   - install-zypper
 
- -name: Install | Install ntpdate packages
+- name: Install | Install ntpdate packages
   package:
     name: '{{ bootstrap_ntpdate_distro_packages }}'
     state: '{{ bootstrap_package_state }}'
@@ -30,7 +30,7 @@
   - install-yum
   - install-zypper
 
- -name: Install | Install packages
+- name: Install | Install packages
   package:
     name: '{{ bootstrap_distro_packages }}'
     state: '{{ bootstrap_package_state }}'
@@ -45,19 +45,19 @@
   - install-yum
   - install-zypper
 
- -name: Install | Get remote packages (deb)
+- name: Install | Get remote packages (deb)
   when: ansible_pkg_mgr == 'apt'
   with_items: '{{ bootstrap_remote_distro_packages }}'
   apt:
     deb: '{{ item }}'
 
- -name: Install | Get remote packages (deb)
+- name: Install | Get remote packages (deb)
   when: ansible_pkg_mgr == 'rpm'
   with_items: '{{ bootstrap_remote_distro_packages }}'
   yum:
     name: '{{ item }}'
 
- -name: Install | Remove packages
+- name: Install | Remove packages
   package:
     name: '{{ bootstrap_distro_remove_packages }}'
     state: absent
@@ -72,7 +72,7 @@
   - remove-yum
   - remove-zypper
 
- -name: Install | Recall pre_install because some packages have been installed
+- name: Install | Recall pre_install because some packages have been installed
   include: bootstrap_pre_install.yml
   when: install_packages is changed
 

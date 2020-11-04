@@ -1,24 +1,24 @@
 ###############################################################################
 # Checks
 #
- -name: Pre-Install | Check htpdate and htpdate exclusiveness
+- name: Pre-Install | Check htpdate and htpdate exclusiveness
   fail: msg="htpdate et ntpdate cannot be used together"
   run_once: true
   when:
   - bootstrap_htpdate_servers | length > 0
   - bootstrap_ntpdate_servers | length > 0
 
-# -name: Pre-Install | Check ntpdate values
+#- name: Pre-Install | Check ntpdate values
 #  fail: msg="NTP servers must not be empty"
 #  when: item | length < 1
 #  with_items: "{{ bootstrap_ntpdate_servers }}"
 
- -name: Pre-Install | Check htpdate values
+- name: Pre-Install | Check htpdate values
   fail: msg="HTP servers must be valid URL endpoints"
   when: item | urlsplit('hostname') == None or (item | urlsplit('scheme') != 'http' and item | urlsplit('scheme') != 'https')
   with_items: '{{ bootstrap_htpdate_servers }}'
 
- -name: Pre-Install | Check syslog remote target
+- name: Pre-Install | Check syslog remote target
   fail: msg="a syslog remote target must be given if local logs are purged"
   run_once: true
   when:
@@ -28,7 +28,7 @@
 ###############################################################################
 # Facts
 #
- -name: Pre-Install | Set default local facts
+- name: Pre-Install | Set default local facts
   set_fact:
     configure_git_http: false
     configure_git_https: false
@@ -42,14 +42,14 @@
     configure_selinux: false
     purge_local_logs: false
 
- -name: Pre-Install | Check git binary
+- name: Pre-Install | Check git binary
   tags: bootstrap-git
   block:
-   -name: Pre-Install | Check git presence
+  - name: Pre-Install | Check git presence
     shell: which git || exit 0
     register: git_result
 
-   -name: Pre-Install | Set local fact for git (https)
+  - name: Pre-Install | Set local fact for git (https)
     set_fact:
       configure_git_https: true
     when:
@@ -57,7 +57,7 @@
     - bootstrap_https_proxy_git != None
     - bootstrap_https_proxy_git | length > 8
 
-   -name: Pre-Install | Set local fact for git (http)
+  - name: Pre-Install | Set local fact for git (http)
     set_fact:
       configure_git_http: true
     when:
@@ -65,14 +65,14 @@
     - bootstrap_http_proxy_git != None
     - bootstrap_http_proxy_git | length > 8
 
- -name: Pre-Install | Check pip binary
+- name: Pre-Install | Check pip binary
   tags: bootstrap-pip
   block:
-   -name: Pre-Install | Check pip and virtualenv presence
+  - name: Pre-Install | Check pip and virtualenv presence
     shell: (which virtualenv || which pip) 2>&1 >/dev/null && echo ok || exit 0
     register: pip_result
 
-   -name: Pre-Install | Check pip presence
+  - name: Pre-Install | Check pip presence
     set_fact:
       configure_pip: true
     when:
@@ -80,14 +80,14 @@
     - bootstrap_http_proxy_pip != None
     - bootstrap_http_proxy_pip | length > 8
 
- -name: Pre-Install | Check cargo binary
+- name: Pre-Install | Check cargo binary
   tags: bootstrap-cargo
   block:
-   -name: Pre-Install | Check cargo presence
+  - name: Pre-Install | Check cargo presence
     shell: which cargo || exit 0
     register: cargo_result
 
-   -name: Pre-Install | Set local fact for cargo
+  - name: Pre-Install | Set local fact for cargo
     set_fact:
       configure_cargo: true
     when:
@@ -95,21 +95,21 @@
     - bootstrap_http_proxy_cargo != None
     - bootstrap_http_proxy_cargo | length > 0
 
- -name: Pre-Install | Check rsyslog service
+- name: Pre-Install | Check rsyslog service
   tags: bootstrap-rsyslog
   block:
-   -name: Pre-Install | Check rsyslog presence
+  - name: Pre-Install | Check rsyslog presence
     shell: which rsyslogd || exit 0
     register: rsyslog_result
 
-   -name: Pre-Install | Set local fact for rsyslog
+  - name: Pre-Install | Set local fact for rsyslog
     set_fact:
       configure_rsyslog: true
     when:
     - bootstrap_syslog_target_host != None
     - rsyslog_result.stdout.find('rsyslogd') > -1
 
-   -name: Pre-Install | Set local fact for local logs
+  - name: Pre-Install | Set local fact for local logs
     set_fact:
       purge_local_logs: true
     when:
@@ -117,26 +117,26 @@
     - bootstrap_syslog_disable_local_storage | lower == 'true'
     - rsyslog_result.stdout.find('rsyslogd') > -1
 
- -name: Pre-Install | Check syslog-ng service
+- name: Pre-Install | Check syslog-ng service
   tags: bootstrap-syslog-ng
   block:
-   -name: Pre-Install | Check syslog-ng presence
+  - name: Pre-Install | Check syslog-ng presence
     shell: which syslog-ng || exit 0
     register: syslog_ng_result
 
-   -name: Pre-Install | Set local fact for syslog-ng
+  - name: Pre-Install | Set local fact for syslog-ng
     set_fact:
       configure_syslog_ng: true
     when:
     - bootstrap_syslog_target_host != None
     - syslog_ng_result.stdout.find('syslog-ng') > -1
 
-   -name: Pre-Install | Get syslog-ng version
+  - name: Pre-Install | Get syslog-ng version
     when: configure_syslog_ng | bool == true
     register: syslog_ng_result
     shell: syslog-ng --version | awk '/^syslog-ng/ { print $2 }'
 
-   -name: Pre-Install | Set local fact for local logs
+  - name: Pre-Install | Set local fact for local logs
     set_fact:
       purge_local_logs: true
     when:
@@ -144,24 +144,24 @@
     - bootstrap_syslog_disable_local_storage | lower == 'true'
     - configure_syslog_ng | bool == true
 
-   -name: Pre-Install | Set local fact for syslog-ng version
+  - name: Pre-Install | Set local fact for syslog-ng version
     when: configure_syslog_ng | bool == true
     set_fact:
       syslog_ng_version: '{{ syslog_ng_result.stdout }}'
 
- -name: Pre-Install | Set local fact for hostname configuration
+- name: Pre-Install | Set local fact for hostname configuration
   when:
   - bootstrap_set_hostname_from_inventory | lower == 'true'
   - bootstrap_hostname != 'localhost'
   set_fact:
     configure_hostname: true
 
- -name: Pre-Install | Set local fact for htp
+- name: Pre-Install | Set local fact for htp
   when: bootstrap_htpdate_servers | length > 0
   set_fact:
     configure_htp: true
 
- -name: Pre-Install | Set local fact for ntp
+- name: Pre-Install | Set local fact for ntp
   when: bootstrap_ntpdate_servers | length > 0
   set_fact:
     configure_ntp: true
@@ -170,15 +170,15 @@
 # Proxies and repositories
 # TODO: set proxy for specific remote repo
 #
- -name: Pre-Install | HTTP proxy configuration for apt
+- name: Pre-Install | HTTP proxy configuration for apt
   template: src=99proxy.j2 dest=/etc/apt/apt.conf.d/99proxy
   when: ansible_os_family | lower == 'debian'
   tags: bootstrap-proxy-package
 
- -name: Pre-Install | HTTP configuration for yum
+- name: Pre-Install | HTTP configuration for yum
   when: ansible_os_family | lower == 'redhat'
   block:
-   -name: Pre-Install | Set yum's proxy
+  - name: Pre-Install | Set yum's proxy
     when:
     - bootstrap_http_proxy_packages != None
     - bootstrap_http_proxy_packages is search('http')
@@ -190,7 +190,7 @@
       value: '{{ bootstrap_http_proxy_packages }}'
     tags: bootstrap-proxy-package
 
-   -name: Pre-Install | Set yum's timeout
+  - name: Pre-Install | Set yum's timeout
     ini_file:
       path: /etc/yum.conf
       section: main
@@ -199,7 +199,7 @@
       value: '{{ bootstrap_yum_timeout }}'
     tags: bootstrap-repo-timeout
 
-   -name: Pre-Install | Set fatestmirror preferences (include)
+  - name: Pre-Install | Set fatestmirror preferences (include)
     ini_file:
       path: /etc/yum/pluginconf.d/fastestmirror.conf
       state: present
@@ -209,7 +209,7 @@
     when: bootstrap_fastestmirror.include_only|length > 0
     tags: bootstrap-repo-package
 
-   -name: Pre-Install | Set fatestmirror preferences (exclude)
+  - name: Pre-Install | Set fatestmirror preferences (exclude)
     when:
     - bootstrap_fastestmirror.exclude | length > 0
     tags: bootstrap-repo-package
@@ -220,7 +220,7 @@
       option: exclude
       value: "{{ bootstrap_fastestmirror.exclude|join(',') }}"
 
-   -name: Pre-Install | set yum's repositories
+  - name: Pre-Install | set yum's repositories
     with_items: '{{ bootstrap_yum_repos }}'
     tags: bootstrap-repo-package
     yum_repository:
@@ -234,7 +234,7 @@
 # /etc/hosts configuration
 # Might be useful for the next steps
 
- -name: Pre-Install | /etc/hosts configuration
+- name: Pre-Install | /etc/hosts configuration
   when: bootstrap_static_hosts | length > 0
   with_items: '{{ bootstrap_static_hosts }}'
   lineinfile:
@@ -243,23 +243,23 @@
     line: "{{ item.ip }}    {{ item.hosts | join(' ') }}"
     regexp: ^{{ item.ip }}
 
- -name: Pre-Install | Create journald values
+- name: Pre-Install | Create journald values
   when:
   - ansible_system | lower == 'linux'
   - configure_syslog_ng | lower == 'true' or configure_rsyslog | lower == 'true'
   block:
-   -name: Pre-Install | Journald to syslog (yes)
+  - name: Pre-Install | Journald to syslog (yes)
     when: bootstrap_journald_forward_to_syslog | lower == 'true'
     set_fact: journald_forward_to_syslog=yes
 
-   -name: Pre-Install | Journald to syslog (no)
+  - name: Pre-Install | Journald to syslog (no)
     when: bootstrap_journald_forward_to_syslog | lower == 'false'
     set_fact: journald_forward_to_syslog=no
 
 ###############################################################################
 # selinux configuration
 
- -name: Pre-Install | Set selinux mode
+- name: Pre-Install | Set selinux mode
   when:
   - ansible_selinux is defined
   - ansible_selinux.config_mode is defined
