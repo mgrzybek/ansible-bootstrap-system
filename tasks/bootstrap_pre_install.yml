@@ -46,7 +46,9 @@
   tags: bootstrap-git
   block:
   - name: Pre-Install | Check git presence
-    shell: which git || exit 0
+    command: which git
+    changed_when: false
+    failed_when: false
     register: git_result
 
   - name: Pre-Install | Set local fact for git (https)
@@ -69,7 +71,9 @@
   tags: bootstrap-pip
   block:
   - name: Pre-Install | Check pip and virtualenv presence
-    shell: (which virtualenv || which pip) 2>&1 >/dev/null && echo ok || exit 0
+    shell: (which virtualenv || which pip) 2>&1 >/dev/null && echo ok
+    changed_when: false
+    failed_when: false
     register: pip_result
 
   - name: Pre-Install | Check pip presence
@@ -84,7 +88,9 @@
   tags: bootstrap-cargo
   block:
   - name: Pre-Install | Check cargo presence
-    shell: which cargo || exit 0
+    command: which cargo
+    changed_when: false
+    failed_when: false
     register: cargo_result
 
   - name: Pre-Install | Set local fact for cargo
@@ -99,7 +105,9 @@
   tags: bootstrap-rsyslog
   block:
   - name: Pre-Install | Check rsyslog presence
-    shell: which rsyslogd || exit 0
+    command: which rsyslogd
+    changed_when: false
+    failed_when: false
     register: rsyslog_result
 
   - name: Pre-Install | Set local fact for rsyslog
@@ -121,7 +129,9 @@
   tags: bootstrap-syslog-ng
   block:
   - name: Pre-Install | Check syslog-ng presence
-    shell: which syslog-ng || exit 0
+    command: which syslog-ng
+    changed_when: false
+    failed_when: false
     register: syslog_ng_result
 
   - name: Pre-Install | Set local fact for syslog-ng
@@ -133,6 +143,8 @@
 
   - name: Pre-Install | Get syslog-ng version
     when: configure_syslog_ng | bool == true
+    changed_when: false
+    failed_when: false
     register: syslog_ng_result
     shell: syslog-ng --version | awk '/^syslog-ng/ { print $2 }'
 
