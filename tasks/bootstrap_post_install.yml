@@ -66,14 +66,14 @@
   tags: bootstrap-rsyslog
   block:
   - name: Post-Install | Set a remote target for rsyslog
-    template: src=rsyslog-remote.conf.j2 dest=/etc/rsyslog.d/99-remote.conf
+    template: src=rsyslog-remote.conf.j2 dest={{ bootstrap_rsyslogd_conf_dir }}/99-remote.conf
     notify: restart rsyslog
 
 - when: configure_syslog_ng | lower == 'true'
   tags: bootstrap-syslog-ng
   block:
   - name: Post-Install | Set a remote target for syslog-ng
-    template: src=syslog-ng-remote.conf.j2 dest=/etc/syslog-ng/conf.d/99-remote.conf
+    template: src=syslog-ng-remote.conf.j2 dest={{ bootstrap_syslogng_conf_dir }}/99-remote.conf
     notify: restart syslog-ng
 
   - name: Post-Install | Flush handlers to enable syslog-ng debug mode
@@ -82,7 +82,7 @@
 
   - name: Post-Install | Add debug mode for syslog-ng
     when: bootstrap_syslog_debug | bool == true
-    command: /usr/sbin/syslog-ng-ctl debug --set=on
+    command: syslog-ng-ctl debug --set=on
 
 - when: configure_hostname | lower == 'true'
   name: Set hostname according to the inventory

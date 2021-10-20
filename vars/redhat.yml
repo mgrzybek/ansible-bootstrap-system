@@ -15,3 +15,5 @@ bootstrap_sysconfig_path: /etc/sysconfig
 bootstrap_yum_repos: []
 
 bootstrap_htpdate_bin: /bin/htpdate
+bootstrap_rsyslogd_conf_dir: /etc/rsyslog.d
+bootstrap_syslogng_conf_dir: /etc/syslog-ng/conf.d

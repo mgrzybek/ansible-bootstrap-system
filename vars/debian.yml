@@ -9,3 +9,5 @@ bootstrap_ntpdate_conf_file: /etc/openntpd/ntpd.conf
 bootstrap_sysconfig_path: /etc/default
 
 bootstrap_htpdate_bin: /usr/sbin/htpdate
+bootstrap_rsyslogd_conf_dir: /etc/rsyslog.d
+bootstrap_syslogng_conf_dir: /etc/syslog-ng/conf.d
